@@ -1,6 +1,8 @@
 import { connectDb } from "@/lib/db";
+import { sendVerificationEmail } from "@/lib/send-verification-email";
 import { UserModel } from "@/models/user.model";
 import { NextResponse } from "next/server";
+import crypto from "node:crypto";
 
 export async function POST(request) {
     await connectDb();
@@ -37,21 +39,38 @@ export async function POST(request) {
             return NextResponse.json({
                 success,
                 message: 'Username or email already taken!'
-            }, {status: 400})
+            }, { status: 400 })
         } else {
+            const verifyToken = crypto.randomBytes(16).toString('hex');
+            const verifyTokenExpiry = new Date(Date.now() + 8 * 60 * 60 * 1000);
+
             user = new UserModel({
                 name: _jsonData['name'],
                 username: _jsonData['username'],
                 email: _jsonData['email'],
                 password: _jsonData['password'],
+                verifyToken,
+                verifyTokenExpiry
             });
             await user.save();
-            success = true;
 
-            return NextResponse.json({
-                success,
-                message: 'User account has been created!'
-            }, {status: 201})
+            const emailResponse = await sendVerificationEmail(email, username, verifyToken);
+
+            console.log(emailResponse);
+
+            if (!emailResponse.success) {
+                return NextResponse.json({
+                    success,
+                    message: emailResponse.message
+                }, { status: 500 })
+            } else {
+                success = true;
+
+                return NextResponse.json({
+                    success,
+                    message: emailResponse.message
+                }, { status: 200 })
+            }
         }
     }
 
