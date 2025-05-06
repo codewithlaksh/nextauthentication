@@ -1,16 +1,25 @@
-import { resend } from "./resend";
-import VerificationEmail from "@/emails/verification-email";
+// import { resend } from "./resend";
+import { transporter } from "./nodemailer";
+import { renderVerificationEmailTemplate } from "./render-email-template";
 
 export async function sendVerificationEmail(email, username, token) {
     let success = false;
 
     try {
-        await resend.emails.send({
-            from: "onboarding@resend.dev",
+        // await resend.emails.send({
+        //     from: "onboarding@resend.dev",
+        //     to: email,
+        //     subject: "Email Verification - NextAuthentication",
+        //     react: VerificationEmail({ username, token })
+        // });
+
+        await transporter.sendMail({
+            from: '"CodeWithLaksh" <noreply@codewithlaksh.com>',
             to: email,
             subject: "Email Verification - NextAuthentication",
-            react: VerificationEmail({ username, token })
-        });
+            html: await renderVerificationEmailTemplate(username, token)
+        })
+
         success = true;
 
         return { success, message: "Please check your email for further instructions!" };

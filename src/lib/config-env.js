@@ -1,3 +1,7 @@
 export const config = {
-    MONGODB_URI: process.env.MONGODB_URI
+    MONGODB_URI: process.env.MONGODB_URI,
+    NODEMAILER_HOST: process.env.NODEMAILER_HOST,
+    NODEMAILER_PORT: +process.env.NODEMAILER_PORT,
+    NODEMAILER_USERNAME: process.env.NODEMAILER_USERNAME,
+    NODEMAILER_PASSWORD: process.env.NODEMAILER_PASSWORD,
 }
