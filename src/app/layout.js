@@ -1,5 +1,6 @@
 import { Karla } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 const karla = Karla({ subsets: ["latin"] });
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${karla.className} antialiased`}
       >
+        <Navbar />
         {children}
       </body>
     </html>
