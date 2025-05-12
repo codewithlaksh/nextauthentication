@@ -57,36 +57,37 @@ export default function SignUpComponent() {
     const onSubmit = async (data) => {
         setLoading(true);
         delete data['cpassword'];
-        const response = await axiosInstance.post('/api/signup', data, {
+        axiosInstance.post('/api/signup', data, {
             headers: {
                 'Content-Type': 'application/json'
             }
         })
+            .then(response => {
+                const { success, message } = response.data;
+
+                if (success) {
+                    toast.success(message, {
+                        autoClose: 2500
+                    });
+                    setLoading(false);
+                    form.reset();
+
+                    setTimeout(() => {
+                        router.replace("/login");
+                    }, 2700);
+                } else {
+                    setLoading(false);
+                    toast.error(message, {
+                        autoClose: 2500
+                    })
+                }
+            })
             .catch(error => {
                 const { success, message } = error.response.data;
                 toast.error(message, {
                     autoClose: 2500
                 })
             });
-
-        const { success, message } = response.data;
-
-        if (success) {
-            toast.success(message, {
-                autoClose: 2500
-            });
-            setLoading(false);
-            form.reset();
-            
-            setTimeout(() => {
-                router.replace("/login");
-            }, 2700);
-        } else {
-            setLoading(false);
-            toast.error(message, {
-                autoClose: 2500
-            })
-        }
     }
 
     return (
@@ -163,7 +164,7 @@ export default function SignUpComponent() {
                             )}
                         />
 
-                        <Button className="w-full">{loading ? <Loader2Icon /> : <LogInIcon />} Sign Up</Button>
+                        <Button className="w-full" disabled={loading}>{loading ? <Loader2Icon className="animate-spin" /> : <LogInIcon />} Sign Up</Button>
                     </form>
                 </Form>
             </CardContent>
