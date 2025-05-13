@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
-import { Button, buttonVariants } from './ui/button'
-import { LogOutIcon, MenuIcon } from 'lucide-react'
+import { buttonVariants } from './ui/button'
+import { MenuIcon } from 'lucide-react'
 import {
   Sheet,
   SheetContent,
@@ -12,9 +12,12 @@ import {
 } from "@/components/ui/sheet"
 import { cookies } from 'next/headers'
 import { LogInIcon } from 'lucide-react'
+import LogOutButton from './auth/logout.component'
 
 export default async function Navbar() {
   const cookiesStore = await cookies();
+  
+
   return (
     <>
       <nav className='flex items-center justify-between bg-background/60 backdrop-blur-md shadow px-6 py-4 sticky bottom-0'>
@@ -36,7 +39,7 @@ export default async function Navbar() {
           {
             cookiesStore.get('authtoken')
               ? <li>
-                <Button className="cursor-pointer mx-0"><LogOutIcon /> Logout</Button>
+                <LogOutButton />
               </li>
               : <>
                 <li>
@@ -75,7 +78,7 @@ export default async function Navbar() {
               {
                 cookiesStore.get('authtoken')
                   ? <li>
-                    <Button className="cursor-pointer mx-0"><LogOutIcon /> Logout</Button>
+                    <LogOutButton />
                   </li>
                   : <>
                     <li>
