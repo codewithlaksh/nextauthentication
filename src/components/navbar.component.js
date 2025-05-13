@@ -2,7 +2,6 @@ import Link from 'next/link'
 import React from 'react'
 import { Button, buttonVariants } from './ui/button'
 import { LogOutIcon, MenuIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import {
   Sheet,
   SheetContent,
@@ -11,8 +10,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { cookies } from 'next/headers'
+import { LogInIcon } from 'lucide-react'
 
-export default function Navbar() {
+export default async function Navbar() {
+  const cookiesStore = await cookies();
   return (
     <>
       <nav className='flex items-center justify-between bg-background/60 backdrop-blur-md shadow px-6 py-4 sticky bottom-0'>
@@ -31,9 +33,20 @@ export default function Navbar() {
           <li>
             <Link href="/profile">My Profile</Link>
           </li>
-          <li>
-            <Button className="cursor-pointer mx-0"><LogOutIcon /> Logout</Button>
-          </li>
+          {
+            cookiesStore.get('authtoken')
+              ? <li>
+                <Button className="cursor-pointer mx-0"><LogOutIcon /> Logout</Button>
+              </li>
+              : <>
+                <li>
+                  <Link href="/signin" className={buttonVariants()}><LogInIcon /> SignIn</Link>
+                </li>
+                <li>
+                  <Link href="/signup" className={buttonVariants()}><LogInIcon /> SignUp</Link>
+                </li>
+              </>
+          }
         </ul>
 
         <Sheet>
@@ -59,9 +72,20 @@ export default function Navbar() {
               <li>
                 <Link href="/profile">My Profile</Link>
               </li>
-              <li>
-                <Button className="cursor-pointer mx-0"><LogOutIcon /> Logout</Button>
-              </li>
+              {
+                cookiesStore.get('authtoken')
+                  ? <li>
+                    <Button className="cursor-pointer mx-0"><LogOutIcon /> Logout</Button>
+                  </li>
+                  : <>
+                    <li>
+                      <Link href="/signin" className={buttonVariants()}><LogInIcon /> SignIn</Link>
+                    </li>
+                    <li>
+                      <Link href="/signup" className={buttonVariants()}><LogInIcon /> SignUp</Link>
+                    </li>
+                  </>
+              }
             </ul>
           </SheetContent>
         </Sheet>
