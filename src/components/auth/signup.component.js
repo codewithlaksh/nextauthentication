@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2Icon } from "lucide-react";
+import Link from "next/link";
+import { Separator } from "../ui/separator";
 
 const signupSchema = z.object({
     name: z.optional(z.string()),
@@ -73,7 +75,7 @@ export default function SignUpComponent() {
                     form.reset();
 
                     setTimeout(() => {
-                        router.replace("/login");
+                        router.replace("/signin");
                     }, 2700);
                 } else {
                     setLoading(false);
@@ -96,6 +98,11 @@ export default function SignUpComponent() {
                 <CardHeader>
                     <CardTitle className="text-xl md:text-2xl text-center font-semibold">SignUp for a new account</CardTitle>
                 </CardHeader>
+
+                <Separator className="my-2" />
+                <p className="text-center">Already a member ? <Link href="/signin" className="text-blue-500">SignIn</Link></p>
+                <Separator className="mt-2" />
+
                 <Form {...form}>
                     <form className="space-y-6 mt-4" onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField

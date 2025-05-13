@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 export default function VerifyComponent(props) {
     const router = useRouter();
-    const { token } = props;
+    const { token, authToken } = props;
     const [verifying, setVerifying] = useState(true);
     const [message, setMessage] = useState("");
 
@@ -34,7 +34,7 @@ export default function VerifyComponent(props) {
                     setMessage(message);
 
                     setTimeout(() => {
-                        router.replace('/login');
+                        router.replace(authToken ? '/profile' : '/signin');
                     }, 2700);
                 } else {
                     toast.error(message, {

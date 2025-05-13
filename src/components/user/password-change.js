@@ -118,7 +118,7 @@ export default function PasswordChangeComponent() {
                         )}
                     />
 
-                    <Button disabled={loading}>{loading && <Loader2Icon />} {loading ? "Updating..." : "Update"}</Button>
+                    <Button disabled={loading}>{loading && <Loader2Icon className="animate-spin" />} {loading ? "Updating..." : "Update"}</Button>
                 </form>
             </Form>
         </>

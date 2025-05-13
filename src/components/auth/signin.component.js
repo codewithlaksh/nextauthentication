@@ -12,6 +12,8 @@ import { LogInIcon, Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import axiosInstance from "@/axios";
 import { toast } from "react-toastify";
+import { Separator } from "../ui/separator";
+import Link from "next/link";
 
 const signInSchema = z.object({
     identifier: z
@@ -39,36 +41,36 @@ export default function SignInComponent() {
     });
     const router = useRouter();
 
-    const onSubmit = async (data) => { 
+    const onSubmit = async (data) => {
         setLoading(true);
         axiosInstance.post('/api/login', data, {
             headers: {
                 "Content-Type": "application/json"
             }
         })
-        .then(response => {
-            setLoading(false);
-            const {success, message} = response.data;
-            
-            if (success) {
-                toast.success(message, {
-                    autoClose: 2500
-                });
-                form.reset();
-                
-                setTimeout(() => {
-                    router.replace('/profile');
-                }, 2700);
-            }
-        })
-        .catch(error => {
-            setLoading(false);
-            const {success, message} = error.response.data;
+            .then(response => {
+                setLoading(false);
+                const { success, message } = response.data;
 
-            toast.error(message, {
-                autoClose: 2500
+                if (success) {
+                    toast.success(message, {
+                        autoClose: 2500
+                    });
+                    form.reset();
+
+                    setTimeout(() => {
+                        router.replace('/profile');
+                    }, 2700);
+                }
             })
-        })
+            .catch(error => {
+                setLoading(false);
+                const { success, message } = error.response.data;
+
+                toast.error(message, {
+                    autoClose: 2500
+                })
+            })
     }
 
     return (
@@ -77,6 +79,12 @@ export default function SignInComponent() {
                 <CardHeader>
                     <CardTitle className="text-xl md:text-2xl font-semibold text-center">Login using credentials</CardTitle>
                 </CardHeader>
+
+                <Separator className="my-2" />
+                <p className="text-center">
+                    Not a member ? <Link href="/signup" className="text-blue-500">SignUp</Link> &bull; Forgot password ? <Link href="/reset-password" className="text-blue-500">Reset Here</Link>
+                </p>
+                <Separator className="mt-2" />
 
                 <Form {...form}>
                     <form className="space-y-6 mt-4" onSubmit={form.handleSubmit(onSubmit)}>

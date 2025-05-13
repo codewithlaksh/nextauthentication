@@ -48,18 +48,51 @@ export async function PATCH(request) {
             const decoded = jwt.verify(authToken.value, config.AUTH_TOKEN_SECRET);
             const user = await UserModel.findById(decoded.id);
 
-            user.name = name;
-            user.profile.address = address;
-            user.profile.phone = phone;
 
-            await user.save();
+            if (user.isVerified) {
+                user.name = name;
+                user.profile.address = address;
+                user.profile.phone = phone;
 
-            success = true;
+                await user.save();
 
-            return NextResponse.json({
-                success,
-                message: 'Profile updated successfully!'
-            }, { status: 200 })
+                success = true;
+
+                return NextResponse.json({
+                    success,
+                    message: 'Profile updated successfully!'
+                }, { status: 200 })
+            } else {
+                let emailResponse;
+                if (user.verifyToken && new Date() < user.verifyTokenExpiry) {
+                    return NextResponse.json({
+                        success,
+                        message: "You already have got email for verifying account! Please verify first."
+                    }, { status: 400 })
+                } else {
+                    const verifyToken = crypto.randomBytes(16).toString('hex');
+                    const verifyTokenExpiry = new Date(Date.now() + 8 * 60 * 60 * 1000);
+    
+                    user.verifyToken = verifyToken;
+                    user.verifyTokenExpiry = verifyTokenExpiry;
+    
+                    await user.save();
+    
+                    await sendVerificationEmail(user.email, user.username, user.verifyToken);
+                }
+
+                if (!emailResponse.success) {
+                    return NextResponse.json({
+                        success,
+                        message: emailResponse.message
+                    }, { status: 500 })
+                } else {
+                    return NextResponse.json({
+                        success,
+                        message: "We have resent verification mail & verify before updating profile!"
+                    }, { status: 400 })
+                }
+            }
         } catch (error) {
             return NextResponse.json({
                 message: 'Invalid or expired token!'
