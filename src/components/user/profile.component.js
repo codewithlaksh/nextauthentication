@@ -37,9 +37,9 @@ export default function ProfileComponent() {
         const response = await axiosInstance.get("/api/profile");
         const data = response.data;
 
-        form.setValue("name", data.name);
-        form.setValue("address", data.profile.address);
-        form.setValue("phone", data.profile.phone);
+        form.setValue("name", data.name ? data.name : "");
+        form.setValue("address", data.profile ? data.profile.address : "");
+        form.setValue("phone", data.profile ? data.profile.phone : "");
     }
 
     const onSubmit = (data) => {

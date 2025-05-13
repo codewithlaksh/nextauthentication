@@ -40,7 +40,8 @@ export async function POST(request) {
 
                 return NextResponse.json({
                     success,
-                    message: emailResponse.message
+                    message: emailResponse.message,
+                    resetToken
                 }, { status: 200 })
             } else {
                 return NextResponse.json({
@@ -62,7 +63,8 @@ export async function POST(request) {
 
                 return NextResponse.json({
                     success,
-                    message: emailResponse.message
+                    message: emailResponse.message,
+                    resetToken
                 }, { status: 200 })
             } else {
                 return NextResponse.json({
